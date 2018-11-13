@@ -1,6 +1,7 @@
 import {SET_AUTH, LOGOUT} from "./mutations.type"
 import {createAction} from "./helpers";
 import cache, {keys} from "../common/services/cache"
+
 import httpFetch from "../common/services/fetch.service";
 
 const state = {
