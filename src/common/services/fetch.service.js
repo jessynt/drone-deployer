@@ -11,6 +11,10 @@ export const generatorQueryString = params => {
     : params;
 };
 
+export const generatorBody = params => {
+  return JSON.stringify(params)
+};
+
 export const statusHandler = response => {
   if (response.status === 401) {
     return Promise.reject(unauthorizedError)
@@ -29,11 +33,9 @@ export const parseAsJson = response => response.json();
 
 const httpFetch = (url, options = {}) => {
   const headers = options.headers || new Headers()
-  // if (JwtService.getToken() !== null) {
-  //   headers.set("Authorization", `Bearer ${JwtService.getToken()}`)
-  // }
-
-  return fetch(API_URL + url, {headers, ...options})
+  headers.set("Accept","application/json")
+  headers.set("Content-Type","application/json")
+  return fetch(API_URL + url, {...options})
     .then(statusHandler)
     .then(parseAsJson);
 }

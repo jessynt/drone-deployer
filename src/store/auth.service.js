@@ -1,5 +1,6 @@
-import {SET_AUTH} from "./mutations.type"
+import {SET_AUTH, LOGOUT} from "./mutations.type"
 import {createAction} from "./helpers";
+import cache, {keys} from "../common/services/cache"
 import httpFetch from "../common/services/fetch.service";
 
 const state = {
@@ -14,19 +15,28 @@ function login({commit}, token) {
   })
 }
 
+function logout({commit}) {
+  commit(createAction(LOGOUT))
+}
+
 const getters = {
   checkLogin: state => state.authorized,
-  authHeader: state => state.authorized ? {'Authorization': 'Bearer ' + state.token} : {},
 };
 
 const actions = {
   login,
+  logout,
 }
 
 const mutations = {
   [SET_AUTH](state = {}, mutation) {
     state.authorized = true
-    mutation && (state.token = mutation.payload.token)
+    state.token = mutation.payload.token
+    cache.set(keys.DRONE_ACCESS_TOKEN, state.token)
+  },
+  [LOGOUT](state = {}) {
+    state.authorized = false
+    cache.clear() // clear all cache
   }
 }
 
